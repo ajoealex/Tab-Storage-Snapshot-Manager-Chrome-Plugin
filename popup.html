@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Storage Manager</title>
+  <style>
+    body { font-family: sans-serif; padding: 10px; width: 400px; }
+    button, .delete-btn {
+      padding: 8px 12px; margin-bottom: 12px; cursor: pointer;
+    }
+    .card {
+      border: 1px solid #ccc; border-radius: 8px;
+      padding: 10px; margin-bottom: 10px;
+      position: relative;
+      cursor: pointer;
+    }
+    .card:hover { background-color: #f9f9f9; }
+    .url { font-weight: bold; font-size: 0.95em; }
+    .title { color: #666; font-size: 0.85em; }
+    .time { font-size: 0.75em; color: #999; }
+    .delete-btn {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      background: none;
+      border: none;
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <button id="capture">Capture Current Tab Session</button>
+  <h3>Captured Sessions</h3>
+  <div id="storage-list"></div>
+  <script src="popup.js"></script>
+</body>
+</html>
