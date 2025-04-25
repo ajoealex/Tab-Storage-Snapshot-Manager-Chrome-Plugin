@@ -1,5 +1,10 @@
 const listContainer = document.getElementById("storage-list");
 const captureBtn = document.getElementById("capture");
+const domainInput = document.getElementById("cookieDomains");
+const addDomainBtn = document.getElementById("addDomainBtn");
+const domainListDisplay = document.getElementById("domainList");
+
+let domainSet = new Set();
 
 // Render saved sessions
 function loadSessions() {
@@ -15,12 +20,10 @@ function loadSessions() {
         <button class="delete-btn" title="Delete">&times;</button>
       `;
 
-      // Inject on card click (not the delete button)
       card.addEventListener("click", (e) => {
         if (!e.target.classList.contains("delete-btn")) injectToTab(data);
       });
 
-      // Delete button
       card.querySelector(".delete-btn").addEventListener("click", () => {
         chrome.storage.local.remove(key, loadSessions);
       });
@@ -30,7 +33,7 @@ function loadSessions() {
   });
 }
 
-// Inject selected session into current tab
+// Inject session into tab
 function injectToTab(data) {
   chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
     chrome.runtime.sendMessage({
@@ -40,34 +43,53 @@ function injectToTab(data) {
       sessionStorage: data.sessionStorage,
       cookies: data.cookies || []
     }, (res) => {
-      if (res.success) alert("Storage & cookies injected!");
+      if (res?.success) alert("Storage & cookies injected!");
     });
   });
 }
 
-// Capture current tab session
-captureBtn.addEventListener("click", async () => {
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  
-    chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      func: () => ({
-        url: location.href,
-        title: document.title,
-        localStorage: { ...localStorage },
-        sessionStorage: { ...sessionStorage }
-      })
-    }, (results) => {
-      const result = results[0].result;
-  
-      chrome.runtime.sendMessage({
-        type: "CAPTURE_WITH_COOKIES",
-        tabId: tab.id,
-        payload: result
-      }, () => loadSessions()); // Reload UI after storing
-    });
-  });
-  
+// Update domain list UI
+function updateDomainListDisplay() {
+  const html = Array.from(domainSet).map(d => `<div>${d}</div>`).join('');
+  domainListDisplay.innerHTML = `<strong>Domains to capture cookies:</strong>${html}`;
+}
 
-// Load on popup open
+// Set default base domain on popup open
+chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
+  const url = new URL(tab.url);
+  domainInput.value = '.*'+url.hostname.replace('www.','')+".*";
+});
+
+// Add cookie domain
+addDomainBtn.addEventListener("click", () => {
+  const domains = domainInput.value.split("\n").map(d => d.trim()).filter(Boolean);
+  domains.forEach(d => domainSet.add(d));
+  updateDomainListDisplay();
+  domainInput.value = ""; // Clear input after add
+});
+
+// Capture session
+captureBtn.addEventListener("click", async () => {
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+
+  chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    func: () => ({
+      url: location.href,
+      title: document.title,
+      localStorage: { ...localStorage },
+      sessionStorage: { ...sessionStorage }
+    })
+  }, (results) => {
+    const result = results[0].result;
+    chrome.runtime.sendMessage({
+      type: "CAPTURE_WITH_COOKIES",
+      tabId: tab.id,
+      payload: result,
+      cookieDomains: Array.from(domainSet)
+    }, () => loadSessions());
+  });
+});
+
+// Initial load
 loadSessions();
