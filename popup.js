@@ -13,6 +13,7 @@ function loadSessions() {
     Object.entries(items).forEach(([key, data]) => {
       const card = document.createElement("div");
       card.className = "bg-white p-3 rounded-lg shadow hover:shadow-md transition relative cursor-pointer";
+      card.title = "Click to inject into current tab";
       card.innerHTML = `
       <div class="p-2 max-w-[310px]">
         <div class="url font-semibold text-blue-700 text-sm break-all mb-1">${data.url}</div>
