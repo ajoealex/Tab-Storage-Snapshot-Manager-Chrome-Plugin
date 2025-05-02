@@ -2,39 +2,21 @@
 <html>
 <head>
   <title>Storage Manager</title>
-  <style>
-    body { font-family: sans-serif; padding: 10px; width: 400px; }
-    button, .delete-btn {
-      padding: 8px 12px; margin-bottom: 12px; cursor: pointer;
-    }
-    .card {
-      border: 1px solid #ccc; border-radius: 8px;
-      padding: 10px; margin-bottom: 10px;
-      position: relative;
-      cursor: pointer;
-    }
-    .card:hover { background-color: #f9f9f9; }
-    .url { font-weight: bold; font-size: 0.95em; }
-    .title { color: #666; font-size: 0.85em; }
-    .time { font-size: 0.75em; color: #999; }
-    .delete-btn {
-      position: absolute;
-      right: 10px;
-      top: 10px;
-      background: none;
-      border: none;
-      color: red;
-      font-weight: bold;
-    }
-  </style>
+  <script src="public/js/browser@4.js"></script> <!-- Local Tailwind -->
 </head>
 <body>
-  <textarea id="cookieDomains" rows="5" cols="40"></textarea>
-  <button id="addDomainBtn">Add Cookie Domain</button>
-  <div id="domainList"></div>
-  <button id="capture">Capture Current Tab Session</button>
-  <h3>Captured Sessions</h3>
-  <div id="storage-list"></div>
+  <div class="p-5 flex flex-col w-100">
+    <textarea id="cookieDomains" rows="5" class="w-full p-2 border border-gray-300 rounded resize-none"
+      placeholder="Enter cookie domains..."></textarea>
+    <button id="addDomainBtn" class="bg-blue-500 text-white px-4 py-2 my-2 rounded hover:bg-blue-600 transition">Add Cookie
+      Domain</button>
+    <div id="domainList" class="space-y-2"></div>
+    <button id="capture" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition">Capture Current Tab Session</button>
+    <h3 class="text-lg font-semibold mt-5">Captured Sessions</h3>
+    <div id="storage-list" class="space-y-3"></div>
+  </div>
+
   <script src="popup.js"></script>
 </body>
+
 </html>
