@@ -13,9 +13,19 @@
         "http://*/*"
     ],
     "action": {
-        "default_popup": "popup.html"
+        "default_popup": "popup.html",
+        "default_icon": {
+            "16": "public/images/icons/icon_16.png",
+            "48": "public/images/icons/icon_48.png",
+            "128": "public/images/icons/icon_128.png"
+        }
     },
     "background": {
         "service_worker": "background.js"
+    },
+    "icons": {
+        "16": "public/images/icons/icon_16.png",
+        "48": "public/images/icons/icon_48.png",
+        "128": "public/images/icons/icon_128.png"
     }
 }

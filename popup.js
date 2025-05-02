@@ -12,12 +12,14 @@ function loadSessions() {
   chrome.storage.local.get(null, (items) => {
     Object.entries(items).forEach(([key, data]) => {
       const card = document.createElement("div");
-      card.className = "card";
+      card.className = "bg-white p-3 rounded-lg shadow hover:shadow-md transition relative cursor-pointer";
       card.innerHTML = `
-        <div class="url">${data.url}</div>
-        <div class="title">${data.title}</div>
-        <div class="time">${data.time}</div>
-        <button class="delete-btn" title="Delete">&times;</button>
+      <div class="p-2 max-w-[310px]">
+        <div class="url font-semibold text-blue-700 text-sm break-all mb-1">${data.url}</div>
+        <div class="title text-gray-600 text-sm truncate">${data.title}</div>
+        <div class="time text-gray-400 text-xs">${data.time}</div>
+      </div>        
+      <button  class="delete-btn absolute top-5 right-2 w-6 h-6 flex items-center justify-center bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-800 transition font-bold"  title="Delete">  &times;</button>
       `;
 
       card.addEventListener("click", (e) => {
@@ -50,14 +52,16 @@ function injectToTab(data) {
 
 // Update domain list UI
 function updateDomainListDisplay() {
-  const html = Array.from(domainSet).map(d => `<div>${d}</div>`).join('');
-  domainListDisplay.innerHTML = `<strong>Domains to capture cookies:</strong>${html}`;
+  const html = Array.from(domainSet)
+    .map(d => `<div class="bg-blue-50 text-blue-800 text-sm px-2 py-1 rounded mb-1">${d}</div>`)
+    .join('');
+  domainListDisplay.innerHTML = '<strong class="block mb-1 text-sm text-gray-700">Domains to capture cookies:</strong>' + html;
 }
 
 // Set default base domain on popup open
 chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
   const url = new URL(tab.url);
-  domainInput.value = '.*'+url.hostname.replace('www.','')+".*";
+  domainInput.value = '.*' + url.hostname.replace('www.', '') + ".*";
 });
 
 // Add cookie domain
